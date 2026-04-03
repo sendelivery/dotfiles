@@ -1,0 +1,48 @@
+#!/bin/bash
+
+### Tool and package installations
+
+echo "Installing brew..."
+if ! command -v "brew" >/dev/null 2>&1; then
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+	echo "brew is already installed!"
+fi
+
+declare -a brew_packages=("git" "gh" "starship" "ghostty")
+declare -a installed=()
+declare -a skipped=()
+
+for i in "${brew_packages[@]}"; do
+    if ! command -v "$i" >/dev/null 2>&1; then
+        brew install "$i"
+        installed+=("$i")
+    else
+        echo "Warning: $i is already installed, skipping."
+        skipped+=("$i")
+    fi
+done
+
+if (( "${#installed[@]}" == 0 )); then
+	echo "All brew packages are already installed!"
+else
+	echo "Installed ${#installed[@]} of ${#brew_packages[@]} packages via brew."
+	for i in "${installed[@]}"; do printf '  %-20s\n'        "$i"; done
+	for i in "${skipped[@]}";   do printf '  %-20s(skipped)\n' "$i"; done
+fi
+
+### Shell configuration
+
+mkdir -p ~/.config
+
+# ghostty config
+cp "$HOME/Templates/config.ghostty" "$HOME/.config/ghostty"
+echo "✓ Copied config.ghostty to $HOME/.config/ghostty/config.ghostty"
+
+# starship config
+cp "$HOME/Templates/starship.toml" "$HOME/.config"
+echo "✓ Copied starship.toml to $HOME/.config/starship.toml"
+
+### Final steps
+
+echo -e "\nAll done, go crazy."
