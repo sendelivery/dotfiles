@@ -9,7 +9,7 @@ else
 	echo "brew is already installed!"
 fi
 
-declare -a brew_packages=("git" "gh" "starship" "ghostty")
+declare -a brew_packages=("git" "gh" "starship" "ghostty" "pyenv")
 declare -a installed=()
 declare -a skipped=()
 
@@ -30,6 +30,14 @@ else
 	for i in "${installed[@]}"; do printf '  %-20s\n'        "$i"; done
 	for i in "${skipped[@]}";   do printf '  %-20s(skipped)\n' "$i"; done
 fi
+
+echo "Installing nvm..."
+if ! command -v "nvm" >/dev/null 2>&1; then
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+else
+	echo "nvm is already installed!"
+fi
+
 
 ### Package configuration
 
@@ -54,7 +62,7 @@ fi
 echo $PATH | grep -q "$HOME/Scripts"
 
 if [ $? -ne 0 ]; then
-    echo 'PATH="$HOME/Scripts:$PATH"' >> "$shell_cfg"
+    echo -e 'PATH="$HOME/Scripts:$PATH"\n' >> "$shell_cfg"
 	echo "✓ Scripts added to PATH"
 fi
 
@@ -63,8 +71,39 @@ starship_init='eval "$(starship init zsh)"'
 grep -q "$starship_init" "$shell_cfg"
 
 if [ $? -ne 0 ]; then
-    echo "$starship_init" >> "$shell_cfg"
+    echo -e "$starship_init\n" >> "$shell_cfg"
 	echo "✓ starship init added to $shell_cfg"
+fi
+
+# pyenv init
+read -r -d '' pyenv_init <<- EOT
+	# pyenv to path
+	PYENV_ROOT="\$HOME/.pyenv"
+	[[ -d \$PYENV_ROOT/bin ]] && PATH="\$PYENV_ROOT/bin:\$PATH"
+	eval "\$(pyenv init -)"
+EOT
+grep -q "$pyenv_init" "$shell_cfg"
+
+if [ $? -ne 0 ]; then
+    echo -e "$pyenv_init\n" >> "$shell_cfg"
+	echo "✓ pyenv init added to $shell_cfg"
+else
+	echo "✓ pyenv already initialised"
+fi
+
+# nvm init
+read -r -d '' nvm_init <<- EOT
+	export NVM_DIR="\$HOME/.nvm"
+	[ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"  # This loads nvm
+	[ -s "\$NVM_DIR/bash_completion" ] && \. "\$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+EOT
+grep -q "$nvm_init" "$shell_cfg"
+
+if [ $? -ne 0 ]; then
+    echo -e "$nvm_init\n" >> "$shell_cfg"
+	echo "✓ nvm init added to $shell_cfg"
+else
+	echo "✓ nvm already initialised"
 fi
 
 ### Final steps
