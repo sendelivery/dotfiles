@@ -31,7 +31,7 @@ else
 	for i in "${skipped[@]}";   do printf '  %-20s(skipped)\n' "$i"; done
 fi
 
-### Shell configuration
+### Package configuration
 
 mkdir -p ~/.config
 
@@ -42,6 +42,30 @@ echo "✓ Copied config.ghostty to $HOME/.config/ghostty/config.ghostty"
 # starship config
 cp "$HOME/Templates/starship.toml" "$HOME/.config"
 echo "✓ Copied starship.toml to $HOME/.config/starship.toml"
+
+### Shell configuration
+
+shell_cfg="$HOME/.zshrc"
+if ! [ -e "$shell_cfg" ] ; then
+    touch "$shell_cfg"
+fi
+
+# Add Scripts directory to the PATH
+echo $PATH | grep -q "$HOME/Scripts"
+
+if [ $? -ne 0 ]; then
+    echo 'PATH="$HOME/Scripts:$PATH"' >> "$shell_cfg"
+	echo "✓ Scripts added to PATH"
+fi
+
+# starship init
+starship_init='eval "$(starship init zsh)"'
+grep -q "$starship_init" "$shell_cfg"
+
+if [ $? -ne 0 ]; then
+    echo "$starship_init" >> "$shell_cfg"
+	echo "✓ starship init added to $shell_cfg"
+fi
 
 ### Final steps
 

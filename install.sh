@@ -18,20 +18,6 @@ cp -r /tmp/dotfiles/Templates/. "$HOME/Templates"
 
 rm -rf /tmp/dotfiles
 
-# Add Scripts directory to the PATH
-
-shell_cfg="$HOME/.zshrc"
-
-if ! [ -e "$shell_cfg" ] ; then
-    touch "$shell_cfg"
-fi
-
-echo $PATH | grep -q "$HOME/Scripts"
-
-if [ $? -ne 0 ]; then
-    echo 'PATH="$HOME/Scripts:$PATH"' >> "$shell_cfg"
-fi
-
 # Make the newmac script executable and run it
 
 chmod +x ~/Scripts/newmac
