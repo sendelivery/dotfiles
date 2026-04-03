@@ -9,35 +9,41 @@ else
 	echo "brew is already installed!"
 fi
 
-declare -a brew_packages=("git" "gh" "starship" "ghostty" "pyenv")
+declare -a brew_formulae=("git" "gh" "starship" "pyenv")
 declare -a installed=()
 declare -a skipped=()
 
-for i in "${brew_packages[@]}"; do
+for i in "${brew_formulae[@]}"; do
     if ! command -v "$i" >/dev/null 2>&1; then
         brew install "$i"
         installed+=("$i")
     else
-        echo "Warning: $i is already installed, skipping."
         skipped+=("$i")
     fi
 done
 
 if (( "${#installed[@]}" == 0 )); then
-	echo "All brew packages are already installed!"
+	echo "All brew formulae are already installed!"
 else
-	echo "Installed ${#installed[@]} of ${#brew_packages[@]} packages via brew."
+	echo "Installed ${#installed[@]} of ${#brew_formulae[@]} formulae via brew."
 	for i in "${installed[@]}"; do printf '  %-20s\n'        "$i"; done
 	for i in "${skipped[@]}";   do printf '  %-20s(skipped)\n' "$i"; done
 fi
 
 echo "Installing nvm..."
-if ! command -v "nvm" >/dev/null 2>&1; then
+if ! command -v "$NVM_DIR/nvm.sh" >/dev/null 2>&1; then
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 else
 	echo "nvm is already installed!"
 fi
 
+echo "Installing Ghostty..."
+ls /Applications | grep -q Ghostty.app
+if [ $? -ne 0 ]; then
+    brew install --cask ghostty
+else
+	echo "Ghostty already installed!"
+fi
 
 ### Package configuration
 
