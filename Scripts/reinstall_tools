@@ -65,9 +65,11 @@ echo "✓ Copied starship.toml to $HOME/.config/starship.toml"
 ### Final steps
 # Change to the directory containing go.mod to build
 (cd "$files_dir/Scripts" && go build ./...)
-"$files_dir/Scripts/configure_zshrc" -append
+"$files_dir/Scripts/generate_zshrc" -append
 
-cp -r "$files_dir/Scripts" "$HOME"
-cp -r "$files_dir/Templates" "$HOME"
+mkdir -p "$HOME/Scripts" "$HOME/Templates"
+
+cp -r "$files_dir/Scripts/." "$HOME/Scripts"
+cp -r "$files_dir/Templates/." "$HOME/Templates"
 
 echo -e "\nAll done, go crazy."

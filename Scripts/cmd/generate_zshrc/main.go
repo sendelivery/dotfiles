@@ -37,8 +37,6 @@ func (z *zshrcConfig) Bytes() []byte {
 		}
 	}
 
-	buf.WriteString("#end of existing!\n")
-
 	for _, opt := range z.Options {
 		if opt.Add {
 			fmt.Fprintf(&buf, "%s\n", opt.Value)
@@ -78,11 +76,14 @@ func main() {
 			panic(err)
 		}
 		cfg.ExistingZshrc = string(b)
+	} else {
+		zshrcFile.Truncate(0)
+		zshrcFile.Seek(0, 0)
 	}
 
 	toggleOptions(&cfg)
 
-	_, err := os.Stdout.Write(cfg.Bytes())
+	_, err := zshrcFile.Write(cfg.Bytes())
 	if err != nil {
 		panic(err)
 	}

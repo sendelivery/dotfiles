@@ -22,20 +22,30 @@ options:
     skipped: ✓ zsh options already set
   - key: addAliases
     value: |
+      # My aliases
       alias ls='ls -G'
     done: ✓ Set aliases
     skipped: ✓ Aliases already set
+  - key: addStarshipInit
+    value: |
+      # starship init
+      eval "$(starship init zsh)"
+    done: ✓ starship init added to .zshrc
+    skipped: ✓ starship already initialised
+  - key: addNvmInit
+    value: |
+      # nvm init
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    done: ✓ nvm init added to .zshrc
+    skipped: ✓ nvm already initialised
   - key: addGoBinToPath
     value: |
       # Add Go binary install path
       export PATH="$(go env GOPATH)/bin:$PATH"
     done: ✓ Go bin added to PATH
     skipped: ✓ Go bin already on PATH
-  - key: addStarshipInit
-    value: |
-      eval "$(starship init zsh)"
-    done: ✓ starship init added to .zshrc
-    skipped: ✓ starship already initialised
   - key: addPyenvInit
     value: |
       # Add pyenv to path
@@ -44,10 +54,3 @@ options:
       eval "$(pyenv init -)"
     done: ✓ pyenv init added to .zshrc
     skipped: ✓ pyenv already initialised
-  - key: addNvmInit
-    value: |
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-    done: ✓ nvm init added to .zshrc
-    skipped: ✓ nvm already initialised

@@ -22,7 +22,7 @@ fi
 
 # Make the reinstall_tools script executable and run it
 chmod +x "$tmp_dir/Scripts/reinstall_tools"
-"$HOME/Scripts/reinstall_tools" $tmp_dir
+"$tmp_dir/Scripts/reinstall_tools" $tmp_dir
 
 # Cleanup
 rm -rf "$tmp_dir"
