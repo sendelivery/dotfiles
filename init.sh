@@ -26,6 +26,5 @@ else
 fi
 
 # Make the newmac script executable and run it
-
-chmod +x "$HOME/Scripts/newmac"
-"$HOME/Scripts/newmac"
+chmod +x "$HOME/Scripts/reinstall_tools"
+"$HOME/Scripts/reinstall_tools"
