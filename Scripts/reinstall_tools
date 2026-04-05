@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# The first and only argument should be the directory containing all the files in the repository
+# $HOME is the default if not provided
+files_dir=$1
+if [ -z "$files_dir" ]; then
+	files_dir="$HOME"
+fi
+
+### Tool and package installations
+echo "Installing brew..."
+if ! command -v "brew" >/dev/null 2>&1; then
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+	echo "brew is already installed!"
+fi
+
+declare -a brew_formulae=("fzf" "gh" "git" "go" "pyenv" "starship")
+declare -a installed=()
+declare -a skipped=()
+
+for i in "${brew_formulae[@]}"; do
+    if ! command -v "$i" >/dev/null 2>&1; then
+        brew install "$i"
+        installed+=("$i")
+    else
+        skipped+=("$i")
+    fi
+done
+
+if (( "${#installed[@]}" == 0 )); then
+	echo "All brew formulae are already installed!"
+else
+	echo "Installed ${#installed[@]} of ${#brew_formulae[@]} formulae via brew."
+	for i in "${installed[@]}"; do printf '  %-20s\n'        "$i"; done
+	for i in "${skipped[@]}";   do printf '  %-20s(skipped)\n' "$i"; done
+fi
+
+echo "Installing nvm..."
+if ! command -v "$NVM_DIR/nvm.sh" >/dev/null 2>&1; then
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+else
+	echo "nvm is already installed!"
+fi
+
+echo "Installing Ghostty..."
+ls /Applications | grep -q Ghostty.app
+if [ $? -ne 0 ]; then
+    brew install --cask ghostty
+else
+	echo "Ghostty already installed!"
+fi
+
+### Package configuration
+mkdir -p "$HOME/.config"
+
+# ghostty config
+cp "$files_dir/Templates/config.ghostty" "$HOME/.config/ghostty"
+echo "✓ Copied config.ghostty to $HOME/.config/ghostty/config.ghostty"
+
+# starship config
+cp "$files_dir/Templates/starship.toml" "$HOME/.config"
+echo "✓ Copied starship.toml to $HOME/.config/starship.toml"
+
+### Final steps
+# Change to the directory containing go.mod to build
+(cd "$files_dir/Scripts" && go build ./...)
+"$files_dir/Scripts/generate_zshrc" -append
+
+mkdir -p "$HOME/Scripts" "$HOME/Templates"
+
+cp -r "$files_dir/Scripts/." "$HOME/Scripts"
+cp -r "$files_dir/Templates/." "$HOME/Templates"
+
+echo -e "\nAll done, go crazy."

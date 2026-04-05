@@ -1,0 +1,56 @@
+options:
+  - key: addScriptsToPath
+    value: |
+      # My Scripts
+      PATH="$HOME/Scripts:$PATH"
+    done: ✓ Scripts directory added to PATH
+    skipped: ✓ Scripts directory already on PATH
+  - key: addHistoryOptions
+    value: |
+      # Enable persistent history
+      HISTFILE=~/.zsh_history
+      HISTSIZE=100000
+      SAVEHIST=100000
+
+      setopt HIST_EXPIRE_DUPS_FIRST
+      setopt HIST_IGNORE_DUPS
+      setopt HIST_IGNORE_ALL_DUPS
+      setopt HIST_IGNORE_SPACE
+      setopt HIST_FIND_NO_DUPS
+      setopt HIST_SAVE_NO_DUPS
+    done: ✓ Set zsh options
+    skipped: ✓ zsh options already set
+  - key: addAliases
+    value: |
+      # My aliases
+      alias ls='ls -G'
+    done: ✓ Set aliases
+    skipped: ✓ Aliases already set
+  - key: addStarshipInit
+    value: |
+      # starship init
+      eval "$(starship init zsh)"
+    done: ✓ starship init added to .zshrc
+    skipped: ✓ starship already initialised
+  - key: addNvmInit
+    value: |
+      # nvm init
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    done: ✓ nvm init added to .zshrc
+    skipped: ✓ nvm already initialised
+  - key: addGoBinToPath
+    value: |
+      # Add Go binary install path
+      export PATH="$(go env GOPATH)/bin:$PATH"
+    done: ✓ Go bin added to PATH
+    skipped: ✓ Go bin already on PATH
+  - key: addPyenvInit
+    value: |
+      # Add pyenv to path
+      PYENV_ROOT="$HOME/.pyenv"
+      [[ -d $PYENV_ROOT/bin ]] && PATH="$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+    done: ✓ pyenv init added to .zshrc
+    skipped: ✓ pyenv already initialised
