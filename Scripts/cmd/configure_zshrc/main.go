@@ -73,11 +73,11 @@ func main() {
 	readConfig(&cfg)
 
 	if *appendToExisting {
-		_, err := os.ReadFile(zshrcFile.Name())
+		b, err := os.ReadFile(zshrcFile.Name())
 		if err != nil {
 			panic(err)
 		}
-		// cfg.ExistingZshrc = string(b)
+		cfg.ExistingZshrc = string(b)
 	}
 
 	toggleOptions(&cfg)
@@ -134,7 +134,7 @@ func templatesDir() string {
 		return _templatesDir
 	}
 
-	_templatesDir = "."
+	_templatesDir = ".."
 
 	if !*debugFlag {
 		_templatesDir = homeDir

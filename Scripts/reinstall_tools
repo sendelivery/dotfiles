@@ -1,7 +1,13 @@
 #!/bin/bash
 
-### Tool and package installations
+# The first and only argument should be the directory containing all the files in the repository
+# $HOME is the default if not provided
+files_dir=$1
+if [ -z "$files_dir" ]; then
+	files_dir="$HOME"
+fi
 
+### Tool and package installations
 echo "Installing brew..."
 if ! command -v "brew" >/dev/null 2>&1; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -9,7 +15,7 @@ else
 	echo "brew is already installed!"
 fi
 
-declare -a brew_formulae=("git" "gh" "starship" "fzf" "pyenv")
+declare -a brew_formulae=("fzf" "gh" "git" "go" "pyenv" "starship")
 declare -a installed=()
 declare -a skipped=()
 
@@ -46,20 +52,22 @@ else
 fi
 
 ### Package configuration
-
-mkdir -p ~/.config
+mkdir -p "$HOME/.config"
 
 # ghostty config
-cp "$HOME/Templates/config.ghostty" "$HOME/.config/ghostty"
+cp "$files_dir/Templates/config.ghostty" "$HOME/.config/ghostty"
 echo "✓ Copied config.ghostty to $HOME/.config/ghostty/config.ghostty"
 
 # starship config
-cp "$HOME/Templates/starship.toml" "$HOME/.config"
+cp "$files_dir/Templates/starship.toml" "$HOME/.config"
 echo "✓ Copied starship.toml to $HOME/.config/starship.toml"
 
-### Run shell configuration program
-go run "$HOME/Scripts/cmd/configure_zshrc/main.go -append -d"
-
 ### Final steps
+# Change to the directory containing go.mod to build
+(cd "$files_dir/Scripts" && go build ./...)
+"$files_dir/Scripts/configure_zshrc" -append
+
+cp -r "$files_dir/Scripts" "$HOME"
+cp -r "$files_dir/Templates" "$HOME"
 
 echo -e "\nAll done, go crazy."
